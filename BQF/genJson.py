@@ -14,4 +14,3 @@ def genJson(D, k):
         b = y[1]
         c = y[2]
             A[str(y)] = str(makeCoeff(k,a,b,c))
-#hello werld
