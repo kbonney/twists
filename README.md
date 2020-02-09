@@ -10,3 +10,5 @@ The goals of this project can be summarized as follows:
 3. Create cusp forms via arithmetic on the Siegel Eisenstein series
 
 4. Twist these cusp forms using the methods laid out in [Fourier coefficients for twists of Siegel paramodular forms (expanded version)](https://arxiv.org/abs/1505.05463) 
+
+Editediteditedit
