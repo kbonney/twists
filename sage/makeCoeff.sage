@@ -1,5 +1,5 @@
 #!/usr/bin/env sage -python
-
+import pprint
 import json
 import sys
 import functionPile
@@ -7,13 +7,13 @@ from fractions import Fraction
 
 
 
-if(len(sys.argv) != 5):
+#if(len(sys.argv) != 5):
     #print"Please run this script as 'python3 eisenCoeffMaker.py a b c k' where a b c are the coefficients of the BQF index and k is the weight of the Eisenstein series"
-    exit()
-a = int(sys.argv[1])
-b = int(sys.argv[2])
-c = int(sys.argv[3])
-k = int(sys.argv[4])
+#    exit()
+#a = int(sys.argv[1])
+#b = int(sys.argv[2])
+#c = int(sys.argv[3])
+#k = int(sys.argv[4])
 
 #this is where we throw everything together
 def makeCoeff(a,b,c,k):
@@ -48,8 +48,8 @@ def makeCoeff(a,b,c,k):
 
 
     
-print('The coefficient indexed by (' + str(a) + ', ' + str(b) + ', ' + str(c) +
-') for the Siegel Eisenstein series of weight ' + str(k) +   ' is ' + str(makeCoeff(a,b,c,k)))
+#print('The coefficient indexed by (' + str(a) + ', ' + str(b) + ', ' + str(c) +
+#') for the Siegel Eisenstein series of weight ' + str(k) +   ' is ' + str(makeCoeff(a,b,c,k)))
 
 
 ##########################################
@@ -63,12 +63,12 @@ def giveReps(D):
 def genJson(D, k):
     A = dict()
     for y in giveReps(D):
-        #print(str(y))###########3y doesnt always have 3 items in array so need to adjust code so errors dont happen
         a = y[0]
         b = y[1]
         c = y[2]
-        #print(str(makeCoeff(a,b,c,k)))
         A[str(y)] = str(makeCoeff(a,b,c,k))
     return A
 
-print(genJson(-4,4))
+pprint.pprint(genJson(-128,4))
+#or alternatively
+#print(json.dumps(genJson(D, k), indent=1))
