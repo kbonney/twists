@@ -68,7 +68,7 @@ def giveReps(D):
 def genJson(D, k):
     A = dict()
     for y in giveReps(D):
-        #print(str(y))
+        #print(str(y))###########3y doesnt always have 3 items in array so need to adjust code so errors dont happen
         a = y[_sage_const_0 ]
         b = y[_sage_const_1 ]
         c = y[_sage_const_2 ]
