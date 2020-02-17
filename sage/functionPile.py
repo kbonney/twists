@@ -87,6 +87,12 @@ def fundDisc(N):
         return temp
     return 4 * temp
 
+def isFundDisc(N):
+    if N == fundDisc(N):
+        return True
+    else:
+        return False
+
 
 #########################################################
 
@@ -191,7 +197,7 @@ def findPrimes(n):
 
 
 # getFundDisc() finds D0 a fundamental discriminant where D=D0f^2
-# Jake made a better function so we use his, ie this is outdated 
+# Jake made a better function. This is obsolete. 
 
 def getFundDisc(D):
     #the way i have constructed the algorithm makes -4 a weird case, so we deal with it seperately for now

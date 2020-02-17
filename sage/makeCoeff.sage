@@ -4,14 +4,15 @@ import json
 import sys
 import functionPile
 from fractions import Fraction
+from collections import OrderedDict
 
 
 
-#if(len(sys.argv) != 5):
-    #print"Please run this script as 'python3 eisenCoeffMaker.py a b c k' where a b c are the coefficients of the BQF index and k is the weight of the Eisenstein series"
-#    exit()
-#a = int(sys.argv[1])
-#b = int(sys.argv[2])
+if(len(sys.argv) != 3):
+    print("Please run this script as 'python3 eisenCoeffMaker.py k N'")
+    exit()
+k = int(sys.argv[1])
+N = int(sys.argv[2])
 #c = int(sys.argv[3])
 #k = int(sys.argv[4])
 
@@ -60,15 +61,23 @@ def giveReps(D):
     A = BinaryQF_reduced_representatives(D)
     return A
 
-def genJson(D, k):
-    A = dict()
-    for y in giveReps(D):
-        a = y[0]
-        b = y[1]
-        c = y[2]
-        A[str(y)] = str(makeCoeff(a,b,c,k))
+
+#iterate through some discriminants and their reduced forms to make some coeffs
+
+def genJson(k, N):
+    A = OrderedDict()
+    for D in range(N):
+        if functionPile.isFundDisc(-D) == True:
+            B = dict()
+            for y in giveReps(-D):
+                a = y[0]
+                b = y[1]
+                c = y[2]
+                B[str(y)] = str(makeCoeff(a,b,c,k))
+            A[str(-D)] = B
     return A
 
-pprint.pprint(genJson(-128,4))
+#discs = [-3, -4, -7, -8, -11, -15, -19, -20, -23, -24, -31]
+#pprint.pprint(genJson(discs,4))
 #or alternatively
-#print(json.dumps(genJson(D, k), indent=1))
+print(json.dumps(genJson(k, N), indent=1))
