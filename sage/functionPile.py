@@ -1,8 +1,11 @@
 from sage.functions.transcendental import zeta
 from sage.quadratic_forms.special_values import quadratic_L_function__exact as lfun
+from sage.quadratic_forms.binary_qf import BinaryQF_reduced_representatives
 import numpy as np
 import math
 from fractions import Fraction
+from collections import OrderedDict
+
 
 
 #########################################################
@@ -256,3 +259,77 @@ def H(k1,N):
 
 
 #########################################################
+
+#this is where we throw everything together
+def makeCoeff(a,b,c,k):
+
+    #calculate the discriminant
+    disc = 4 * a * c - b * b
+    
+    #calculate the zeta functions
+    z1 = zeta(1 - k)
+    z2 = zeta(3 - (2 * k))
+
+    #make a list of nonzero coefficients of our BQF
+    list = []
+    for i in [a, b, c]:
+        if i != 0:
+            list.append(i)
+            
+    sum = 0
+    
+    #iterate through divisors of our BQF (this forms the core sum)
+    for d in range(1, min(list) + 1):
+        if a % d == 0 and b % d == 0 and c % d == 0:
+            #add term as given in McCarthy for each divisor d
+            POW = (d ** (k-1))
+            HFUN = H(k-1, disc / (d ** 2))
+            sum += POW * HFUN
+    #finish off the calculation by multiplying by 2/(Z(1 - k) * Z(3 - 32))        
+    value = 2 * sum / (z1 * z2) 
+    return value
+
+#tada!
+
+
+    
+#print('The coefficient indexed by (' + str(a) + ', ' + str(b) + ', ' + str(c) +
+#') for the Siegel Eisenstein series of weight ' + str(k) +   ' is ' + str(makeCoeff(a,b,c,k)))
+
+
+##########################################
+
+
+
+def giveReps(D):
+    A = BinaryQF_reduced_representatives(D)
+    return A
+
+
+#iterate through some discriminants and their reduced forms to make some coeffs
+
+def genJson(k, N):
+    A = OrderedDict()
+    for D in range(N):
+        if isFundDisc(-D) == True:
+            B = dict()
+            for y in giveReps(-D):
+                a = y[0]
+                b = y[1]
+                c = y[2]
+                B[str(y)] = str(makeCoeff(a,b,c,k))
+            A[str(-D)] = B
+    return A
+
+
+
+###############
+#CLASS stuff
+###########
+
+class eisen: 
+    def __init__(self, k):
+        self.weight = k
+    
+    def coeff(a,b,c):
+        makeCoeff
