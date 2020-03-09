@@ -75,6 +75,42 @@ def mobius(N) :
 
 #########################################################
 
+def gcd(a, b):
+    while(b):
+        a, b = b, a%b
+    return a
+
+def divides(a,b):
+    if b % a == 0:
+        return True
+    else:
+        return False
+
+def maxdivides(p,k,b):
+    if b % p**k == 0 and b % p**(k+1) != 0:
+        return True
+    else:
+        return False
+
+def mresidues(n, isprime = False):
+    if isprime == True:
+        A = list()
+        for r in range(1,n):
+            A.append(r)
+        return A
+    else:
+        A = list()
+        for r in range(1,n):
+            if gcd(n, r) == 1:
+                A.append(r)
+        return A
+
+#########################################################
+
+#########################################################
+
+#########################################################
+
 #fundamental discriminant finder that Jake came up with, much easier to comprehend.
 
 def fundDisc(N):
@@ -321,15 +357,73 @@ def genJson(k, N):
             A[str(-D)] = B
     return A
 
+#########################
+
+def BQFsplitter(a,b,c):
+    D = list()
+    for n in range(0,a+1):
+        a1 = a - n
+        for m in range(0,c+1):
+            b1 = a - m
+            ran = math.floor(2*math.sqrt(a1 * b1))
+            for k in range(-ran,ran+1):
+                S1cand = (a1,k,b1)
+                b2 = b-k
+                S2cand = (n,b2,m)
+                if (b2)**2 <= 4*m*n:
+                    D.append((S1cand,S2cand))
+    return D
 
 
-###############
-#CLASS stuff
-###########
 
-class eisen: 
+
+
+#############
+#Class stuff#
+#############
+
+
+### Class stuff not really good for multiplying forms
+#thinking of making a new structure where we name a form a 
+# 1) "base" or "eisen" type in which case coeffs are gotten from the eisenceoffcalc
+# 2) "add" type where we add the coeffs from the two forms that make it up
+# 3) "mult" type where we get the coeffs by using a multiply routine on the two constituent forms. (using BQFsplitter)
+# 4) "scale" type where we get the coeffs by a simple scalar multiplication
+class SPMF: 
     def __init__(self, k):
         self.weight = k
+        self.iseisen = True
+        self.parts = list()
+        #this could break things... appending self to list inside of self
+        self.parts.append(self,'a')
+
+    def coeff(self,a,b,c):
+        C = 0
+        for i self.parts:
+            if i[1] == 'a' :
+                C += i[0].coeff(a,b,c)
+                #workin on mult
+            if i[1] == 'm' :
+                for P in BQFsplitter(a,b,c):
+        return A
+
+    def scale(self,c):
+
+
+    def add(self,E):
+        self.parts.append((E,a)
+        print(self.parts)
+        self.iseisen = False
     
-    def coeff(a,b,c):
-        makeCoeff
+    def mult(self, E)
+        self.parts.append((E,m))
+        print(self.parts)
+        self.iseisen = False
+        
+
+class eisen(SPMF):
+    pass
+
+
+
+

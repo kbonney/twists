@@ -1,4 +1,4 @@
-#!/usr/bin/env sage -python
+#!/usr/local/src/SageMath/sage
 import json
 import sys
 import functionPile as fP
