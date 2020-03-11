@@ -1,4 +1,5 @@
 #!/usr/local/src/SageMath/sage
+#usage : sage makeEisenJson.sage k N
 import json
 import sys
 import functionPile as fP

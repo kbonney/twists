@@ -1,6 +1,7 @@
 from sage.functions.transcendental import zeta
 from sage.quadratic_forms.special_values import quadratic_L_function__exact as lfun
 from sage.quadratic_forms.binary_qf import BinaryQF_reduced_representatives
+from sage.arith.misc import jacobi_symbol as leg
 import numpy as np
 import math
 from fractions import Fraction
@@ -156,7 +157,7 @@ def isqrt(n):
 #########################################################
 
 # kronecker symbol calculator, algorithm taken from Cohen's computational number theory book
-
+# this is already in sage, we should substitute it at some point
 def kronecker(a, b):
     if 0 == b:
         if abs(a) != 1:
@@ -263,7 +264,7 @@ def getFundDisc(D):
 
 #########################################################
 
-
+##cohen's function, according to raum this can be calculated by sage... investigate this further.
 def H(k1,N):
     #here we assign variables in a way that meshes with notation in McCarthy and Raum
     k = k1 + 1
@@ -323,7 +324,7 @@ def makeCoeff(a,b,c,k):
     sum = 0
     
     #iterate through divisors of our BQF (this forms the core sum)
-    for d in range(1, min(list) + 1):
+    for d in range(1, abs(min(list)) + 1):
         if a % d == 0 and b % d == 0 and c % d == 0:
             #add term as given in McCarthy for each divisor d
             POW = (d ** (k-1))
@@ -351,7 +352,7 @@ def giveReps(D):
 
 
 #iterate through some discriminants and their reduced forms to make some coeffs
-
+#todo : change index from bqf to tuple, fix coefficients having a floating ".0"
 def genJson(k, N):
     A = OrderedDict()
     for D in range(N):
