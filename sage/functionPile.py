@@ -7,7 +7,12 @@ from fractions import Fraction
 from collections import OrderedDict
 
 
+#### BIG TODOS
 
+## 1) get rid of redundant functions (ie functions already in sage)
+## 2) mesh code with sage's BQF class. allow BQF related functions to take a BQF class as an argument as well
+## 3) neaten thigns up., comment code, rename functions, add error handing. maybe some helpful print statements
+## 4) makeCoeff cannot calculate for (0,0,0) fix this
 #########################################################
 
 #here we have a simple prime checker
@@ -299,6 +304,9 @@ def H(k1,N):
 #this is where we throw everything together
 def makeCoeff(a,b,c,k):
 
+    if (a,b,c) == (0,0,0):
+        return 1
+
     #calculate the discriminant
     disc = 4 * a * c - b * b
     
@@ -364,10 +372,10 @@ def BQFsplitter(a,b,c):
     for n in range(0,a+1):
         a1 = a - n
         for m in range(0,c+1):
-            b1 = a - m
-            ran = math.floor(2*math.sqrt(a1 * b1))
-            for k in range(-ran,ran+1):
-                S1cand = (a1,k,b1)
+            c1 = c - m
+            ran = math.floor(2*math.sqrt(a1 * c1))
+            for k in range(-int(ran),int(ran)+1):
+                S1cand = (a1,k,c1)
                 b2 = b-k
                 S2cand = (n,b2,m)
                 if (b2)**2 <= 4*m*n:
@@ -389,41 +397,69 @@ def BQFsplitter(a,b,c):
 # 2) "add" type where we add the coeffs from the two forms that make it up
 # 3) "mult" type where we get the coeffs by using a multiply routine on the two constituent forms. (using BQFsplitter)
 # 4) "scale" type where we get the coeffs by a simple scalar multiplication
+
 class SPMF: 
     def __init__(self, k):
         self.weight = k
-        self.iseisen = True
-        self.parts = list()
-        #this could break things... appending self to list inside of self
-        self.parts.append(self,'a')
+        self.type = 'eisen'
+        self.constituents = (self,1)
 
-    def coeff(self,a,b,c):
-        C = 0
-        for i self.parts:
-            if i[1] == 'a' :
-                C += i[0].coeff(a,b,c)
-                #workin on mult
-            if i[1] == 'm' :
-                for P in BQFsplitter(a,b,c):
-        return A
-
-    def scale(self,c):
-
-
-    def add(self,E):
-        self.parts.append((E,a)
-        print(self.parts)
-        self.iseisen = False
-    
-    def mult(self, E)
-        self.parts.append((E,m))
-        print(self.parts)
-        self.iseisen = False
         
+    def coeff(self,a,b,c):
+        if self.type == 'eisen':
+            return makeCoeff(a,b,c, self.weight)
+        if self.type == 'mult':
+            C = 0
+            F1 = self.constituents[0]
+            F2 = self.constituents[1]
+            for Q in BQFsplitter(a,b,c):
+                Q1 = Q[0]
+                Q2 = Q[1]
+                C += (F1.coeff(Q1[0],Q1[1],Q1[2]) * F2.coeff(Q2[0],Q2[1],Q2[2]))
+            return C    
+        if self.type == 'add':
+            F1 = self.constituents[0]
+            F2 = self.constituents[1]
+            C = F1.coeff(a,b,c) + F2.coeff(a,b,c)
+            return C
+        if self.type == 'scale':
+            F1 = self.constituents[0]
+            c1 = self.constituents[1]
+            C = c1 * F1.coeff(a,b,c)
+            return C
+        if self.type == 'twist':
+            F1 = self.constituents[0]
+            p = self.constituents[1]
+            if (b % p == 0 and a % p**4 == 0):
+                P_1 = p**(1 - E.weight) * chi(b)
+                P_2 = 0
+                for r in mresidues(p, isprime = True):
+                    P_2 += chi(r) * E.coeff(bracket(S,A))
+                    # need to define bracket and A
+                    # use numpy a.dot(b)
+                P = P_1 * P_2
+                return P
 
-class eisen(SPMF):
-    pass
+def multiplyForms(E,F):
+    A = SPMF(E.weight + F.weight)
+    A.type = 'mult'
+    A.constituents = (E,F)
+    return A
 
+def addForms(E,F):
+    A = SPMF(E.weight)
+    A.type = 'add'
+    A.constituents = (E,F)
+    return A
 
+def scaleForms(E,c):
+    A = SPMF(E.weight)
+    A.type = 'scale'
+    A.constituents = (E,c)
+    return A
 
-
+def twistForms(E,p):
+    A = SPMF(E.weight)
+    A.type = 'twist'
+    A.constituents = (E,p)
+    return A
