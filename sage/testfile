@@ -1,0 +1,4 @@
+import functionPile as fp
+A = fp.SPMF(4)
+B=fp.twistForms(A,3)
+B.coeff(81,0,1)
